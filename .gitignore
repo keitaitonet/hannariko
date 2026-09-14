@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build and test output
+dist/
+coverage/
+*.tsbuildinfo
+
+# Mastra local output
+.mastra/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.duckdb
+*.duckdb-*
+*.duckdb.wal
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# OS files
+.DS_Store
