@@ -1,31 +1,17 @@
 diff --git a/dist/index.js b/dist/index.js
-index 2b07a8b6569234dac42026e560aef701e7e9fbbb..2318495ab35015a7d93a21521957352065385de9 100644
+index 2b07a8b6569234dac42026e560aef701e7e9fbbb..793690126e249acf11b5cc8568c0e385dfd3f264 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -1485,22 +1485,6 @@ var DiscordAdapter = class _DiscordAdapter {
-     );
-     const isEveryoneMentioned = this.respondToGlobalMentions && data.mention_everyone === true;
-     const isMentioned = isUserMentioned || isRoleMentioned || isEveryoneMentioned || !data.author.bot && this.respondToChannelIds.includes(parentChannelId);
--    if (!discordThreadId && isMentioned) {
--      try {
--        const newThread = await this.createDiscordThread(channelId, data.id);
--        discordThreadId = newThread.id;
--        this.logger.debug("Created Discord thread for forwarded mention", {
--          channelId,
--          messageId: data.id,
--          threadId: newThread.id
--        });
--      } catch (error) {
--        this.logger.error("Failed to create Discord thread for mention", {
--          error: String(error),
--          messageId: data.id
--        });
--      }
--    }
-     const threadId = this.encodeThreadId({
-       guildId,
-       channelId: parentChannelId,
-@@ -2685,22 +2669,6 @@ var DiscordAdapter = class _DiscordAdapter {
+@@ -2544,7 +2544,7 @@ var DiscordAdapter = class _DiscordAdapter {
+       const isChannelAllowlisted = this.respondToChannelIds.includes(
+         message.channel.isThread() ? message.channel.parentId ?? message.channelId : message.channelId
+       );
+-      const isMentioned = isUserMentioned || isRoleMentioned || isEveryoneMentioned || isChannelAllowlisted;
++      const isMentioned = message.guildId !== null || isUserMentioned || isRoleMentioned || isEveryoneMentioned || isChannelAllowlisted;
+       this.logger.info("Discord Gateway message received", {
+         channelId: message.channelId,
+         guildId: message.guildId,
+@@ -2685,22 +2685,6 @@ var DiscordAdapter = class _DiscordAdapter {
        parentChannelId = message.channel.parentId;
        this.rememberThreadParent(discordThreadId, parentChannelId);
      }
