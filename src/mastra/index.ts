@@ -8,12 +8,14 @@ import {
   SensitiveDataFilter,
 } from "@mastra/observability";
 import { discordAgent } from "./agents/discord-agent";
+import { reminderWorkflow } from "./workflows/reminder-workflow";
 
 export const mastra = new Mastra({
   bundler: {
     externals: ["@duckdb/node-bindings"],
   },
   agents: { discordAgent },
+  workflows: { reminderWorkflow },
   storage: new MastraCompositeStore({
     id: "composite-storage",
     default: new LibSQLStore({

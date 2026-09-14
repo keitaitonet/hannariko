@@ -2,6 +2,11 @@ import { createDiscordAdapter } from "@chat-adapter/discord";
 import { Agent, type ToolsInput } from "@mastra/core/agent";
 import { AgentChannels } from "@mastra/core/channels";
 import { Memory } from "@mastra/memory";
+import {
+  cancelReminderTool,
+  createReminderTool,
+  listRemindersTool,
+} from "../tools/reminder-tools";
 
 const channels = new AgentChannels({
   adapters: {
@@ -16,6 +21,8 @@ export const discordAgent = new Agent({
   instructions: `
 あなたはDiscordの会話に参加する「はんなり子」です。
 ひとりの参加者として、会話の流れに合わせて自然に振る舞ってください。
+リマインダーの登録、確認、取り消しには専用のツールを使用してください。
+<reminder>を受け取ったら、その内容をリマインダーとして伝えてください。
   `.trim(),
   model: "openai/gpt-5.6-luna",
   memory: new Memory({
@@ -26,6 +33,11 @@ export const discordAgent = new Agent({
       },
     },
   }),
-  tools: channelTools,
+  tools: {
+    ...channelTools,
+    createReminderTool,
+    listRemindersTool,
+    cancelReminderTool,
+  },
   channels,
 });
