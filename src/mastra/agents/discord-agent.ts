@@ -1,7 +1,7 @@
 import { createDiscordAdapter } from "@chat-adapter/discord";
 import { Agent, type ToolsInput } from "@mastra/core/agent";
 import { AgentChannels } from "@mastra/core/channels";
-import { webSearchTool } from "@mastra/core/tools";
+import { webFetchTool, webSearchTool } from "@mastra/core/tools";
 import { Memory } from "@mastra/memory";
 import {
   cancelReminderTool,
@@ -25,6 +25,7 @@ export const discordAgent = new Agent({
 リマインダーの登録、確認、取り消しには専用のツールを使用してください。
 <reminder>を受け取ったら、その内容をリマインダーとして伝えてください。
 現在の情報が必要な場合はWeb検索を使用してください。
+URLの内容を読む必要がある場合はWeb取得を使用してください。
   `.trim(),
   model: "openai/gpt-5.6-luna",
   memory: new Memory({
@@ -41,6 +42,7 @@ export const discordAgent = new Agent({
     listRemindersTool,
     cancelReminderTool,
     webSearch: webSearchTool,
+    webFetch: webFetchTool,
   },
   channels,
 });
