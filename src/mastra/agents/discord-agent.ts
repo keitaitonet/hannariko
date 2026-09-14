@@ -18,7 +18,11 @@ export const discordAgent = new Agent({
 ひとりの参加者として、会話の流れに合わせて自然に振る舞ってください。
   `.trim(),
   model: "openai/gpt-5.6-luna",
-  memory: new Memory(),
+  memory: new Memory({
+    options: {
+      lastMessages: 20,
+    },
+  }),
   tools: channelTools,
   channels,
 });
