@@ -21,6 +21,9 @@ export const discordAgent = new Agent({
   memory: new Memory({
     options: {
       lastMessages: 20,
+      observationalMemory: {
+        model: "openai/gpt-5.6-terra",
+      },
     },
   }),
   tools: channelTools,
