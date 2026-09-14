@@ -1,2 +1,4 @@
 allowBuilds:
   esbuild: true
+patchedDependencies:
+  '@chat-adapter/discord@4.40.0': patches/@chat-adapter__discord@4.40.0.patch
