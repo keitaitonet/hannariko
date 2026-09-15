@@ -23,3 +23,4 @@ docker compose down
 DB は volume `hannariko_data` に保存。`down -v` で削除される。
 
 AWS 構成は [infrastructure/README.md](infrastructure/README.md) を参照。
+利用状況の分析は [docs/analysis.md](docs/analysis.md) を参照。

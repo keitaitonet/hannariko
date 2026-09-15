@@ -28,6 +28,9 @@ coverage/
 *.log
 pnpm-debug.log*
 
+# Local usage analysis
+.analysis/
+
 # OS files
 .DS_Store
 
