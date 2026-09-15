@@ -22,7 +22,7 @@ PR でビルド・起動確認、`main` への push で ECR → SSM → Compose 
 
 初回設定:
 
-1. `terraform output -json github_actions_variables` の値を GitHub の Repository variables に設定。
+1. GitHub Environment `production` を作成し、デプロイ元を `main` ブランチのみに制限（承認なし）。`terraform output -json github_actions_variables` の値をその Environment の Variables に設定。
 2. EC2 の `/opt/hannariko/.env` に Bot の環境変数を用意。
 3. `main` に push、または Actions の「CI and deploy」を手動実行。
 
