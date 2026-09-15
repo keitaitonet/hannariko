@@ -14,4 +14,5 @@ terraform apply
 state: `s3://tfstate-075472845547-ap-northeast-1-an/hannariko/production/terraform.tfstate`
 
 EC2 の置き換えは `prevent_destroy` で保護。終了後も EBS は残る。
-Docker / Compose の導入と CI/CD はこれから追加する。
+初回起動で Docker / Compose を導入する。アプリの配置先は `/opt/hannariko`。
+CI/CD は次の段階で追加する。

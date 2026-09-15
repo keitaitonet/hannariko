@@ -21,6 +21,7 @@ resource "aws_instance" "bot" {
   subnet_id              = aws_subnet.bot.id
   vpc_security_group_ids = [aws_security_group.bot.id]
   iam_instance_profile   = aws_iam_instance_profile.bot.name
+  user_data              = file("${path.module}/user-data.sh")
 
   depends_on = [aws_route_table_association.bot]
 
