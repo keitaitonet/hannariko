@@ -20,10 +20,13 @@ export const mastra = new Mastra({
     id: "composite-storage",
     default: new LibSQLStore({
       id: "mastra-storage",
-      url: "file:./mastra.db",
+      url: process.env.DATABASE_URL ?? "file:./mastra.db",
     }),
     domains: {
-      observability: new DuckDBStore().observability,
+      observability: new DuckDBStore({
+        path: process.env.DUCKDB_PATH ?? "mastra.duckdb",
+        memoryLimit: "256MB",
+      }).observability,
     },
   }),
   observability: new Observability({

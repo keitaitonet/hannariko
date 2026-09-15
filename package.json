@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "mastra dev",
-    "build": "mastra build"
+    "build": "mastra build",
+    "check": "tsc --noEmit"
   },
   "packageManager": "pnpm@12.4.1",
   "engines": {
