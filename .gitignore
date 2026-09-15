@@ -30,3 +30,13 @@ pnpm-debug.log*
 
 # OS files
 .DS_Store
+
+# Terraform (commit .terraform.lock.hcl)
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+*.tfbackend
+crash.log
