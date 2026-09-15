@@ -1,0 +1,38 @@
+diff --git a/dist/src-BNB8ko_o.js b/dist/src-BNB8ko_o.js
+index 974d62a614b404ce25462157e1591de3039012a8..3fe74545854eef73f5cb6ff61cb0eaf1ecbf6a6d 100644
+--- a/dist/src-BNB8ko_o.js
++++ b/dist/src-BNB8ko_o.js
+@@ -19033,7 +19033,13 @@ function formatObserverMessage(msg, counter, options) {
+ 	const maxLen = options?.maxPartLength;
+ 	const maxToolResultTokens = options?.maxToolResultTokens ?? 1e4;
+ 	const attachmentFilter = options?.attachmentFilter;
+-	const role = msg.role.charAt(0).toUpperCase() + msg.role.slice(1);
++	let role = msg.role.charAt(0).toUpperCase() + msg.role.slice(1);
++	const signal = typeof msg.content === "object" ? msg.content?.metadata?.signal : undefined;
++	if (msg.role === "signal" && signal?.type === "user") {
++		const { authorName, authorId } = signal.attributes ?? {};
++		const author = { name: authorName, id: authorId };
++		role = authorName || authorId ? `User ${JSON.stringify(author)}` : "User";
++	}
+ 	const attachments = [];
+ 	const messageCreatedAt = normalizeObserverCreatedAt(msg.createdAt);
+ 	let lines = [];
+diff --git a/dist/src-DjCR8GJe.cjs b/dist/src-DjCR8GJe.cjs
+index 46e70ab59793204261225ae7602855d66d697a05..4b2540d03a416809a383ee0701a230935daff470 100644
+--- a/dist/src-DjCR8GJe.cjs
++++ b/dist/src-DjCR8GJe.cjs
+@@ -19055,7 +19055,13 @@ function formatObserverMessage(msg, counter, options) {
+ 	const maxLen = options?.maxPartLength;
+ 	const maxToolResultTokens = options?.maxToolResultTokens ?? 1e4;
+ 	const attachmentFilter = options?.attachmentFilter;
+-	const role = msg.role.charAt(0).toUpperCase() + msg.role.slice(1);
++	let role = msg.role.charAt(0).toUpperCase() + msg.role.slice(1);
++	const signal = typeof msg.content === "object" ? msg.content?.metadata?.signal : undefined;
++	if (msg.role === "signal" && signal?.type === "user") {
++		const { authorName, authorId } = signal.attributes ?? {};
++		const author = { name: authorName, id: authorId };
++		role = authorName || authorId ? `User ${JSON.stringify(author)}` : "User";
++	}
+ 	const attachments = [];
+ 	const messageCreatedAt = normalizeObserverCreatedAt(msg.createdAt);
+ 	let lines = [];

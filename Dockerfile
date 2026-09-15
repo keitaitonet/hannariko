@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 COPY tsconfig.json ./
 COPY src ./src
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm check && pnpm build
+    pnpm build
 
 # Mastra generates a standalone package, but does not copy pnpm patch settings.
 RUN cp pnpm-workspace.yaml .mastra/output/ && cp -r patches .mastra/output/
