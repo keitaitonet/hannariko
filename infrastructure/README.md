@@ -15,4 +15,20 @@ state: `s3://tfstate-075472845547-ap-northeast-1-an/hannariko/production/terrafo
 
 EC2 の置き換えは `prevent_destroy` で保護。終了後も EBS は残る。
 初回起動で Docker / Compose を導入する。アプリの配置先は `/opt/hannariko`。
-CI/CD は次の段階で追加する。
+
+## CI/CD
+
+PR でビルド・起動確認、`main` への push で ECR → SSM → Compose 更新。
+
+初回設定:
+
+1. `terraform output -json github_actions_variables` の値を GitHub の Repository variables に設定。
+2. EC2 の `/opt/hannariko/.env` に Bot の環境変数を用意。
+3. `main` に push、または Actions の「CI and deploy」を手動実行。
+
+EC2 でのログ確認:
+
+```sh
+cd /opt/hannariko
+docker compose --env-file image.env logs --tail=100 -f bot
+```

@@ -1,0 +1,103 @@
+name: CI and deploy
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      INSTANCE_ID: ${{ vars.INSTANCE_ID }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: bash -n scripts/deploy.sh
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+      - name: Build and typecheck
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          tags: hannariko:ci
+          labels: org.opencontainers.image.source=https://github.com/keitaitonet/hannariko
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Check startup
+        run: |
+          trap 'docker logs --tail=30 hannariko-ci; docker rm -f hannariko-ci' EXIT
+          docker run -d --name hannariko-ci --network none \
+            -e OPENAI_API_KEY=offline-test -e DISCORD_BOT_TOKEN=offline-test \
+            -e DISCORD_APPLICATION_ID=123456789012345678 \
+            -e DISCORD_PUBLIC_KEY=0000000000000000000000000000000000000000000000000000000000000000 \
+            -e DATABASE_URL=file:/data/mastra.db -e DUCKDB_PATH=/data/mastra.duckdb hannariko:ci
+          docker exec hannariko-ci node --input-type=module -e '
+            import assert from "node:assert/strict";
+            import { readFileSync } from "node:fs";
+            const adapter = readFileSync(new URL(import.meta.resolve("@chat-adapter/discord")), "utf8");
+            assert(adapter.includes("message.guildId !== null || isUserMentioned"));
+            for (let attempt = 0; attempt < 60; attempt++) {
+              const response = await fetch("http://127.0.0.1:4111/health", { signal: AbortSignal.timeout(1000) }).catch(() => null);
+              if (response?.ok) process.exit(0);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            process.exit(1);
+          '
+      - name: Authenticate to AWS
+        if: github.ref == 'refs/heads/main'
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Push and deploy
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="$ECR_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          aws ecr get-login-password | docker login --username AWS --password-stdin "${ECR_REPOSITORY%%/*}"
+          docker tag hannariko:ci "$image"
+          docker push "$image"
+          digest=$(docker image inspect "$image" --format '{{json .RepoDigests}}' |
+            jq -r --arg prefix "$ECR_REPOSITORY@" '.[] | select(startswith($prefix))')
+          args=$(jq -nr --arg image "$digest" --arg compose "$(base64 -w0 compose.yaml)" \
+            --arg region "$AWS_REGION" '[$image, $compose, $region] | @sh')
+          command="printf %s $(base64 -w0 scripts/deploy.sh) | base64 --decode | bash -s -- $args"
+          jq -n --arg command "$command" '{commands: [$command], executionTimeout: ["900"]}' > "$RUNNER_TEMP/deploy.json"
+          command_id=$(aws ssm send-command --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript --timeout-seconds 120 \
+            --parameters "file://$RUNNER_TEMP/deploy.json" --query Command.CommandId --output text)
+          echo "SSM command: $command_id"
+          deadline=$((SECONDS + 1100))
+          while (( SECONDS < deadline )); do
+            sleep 5
+            if result=$(aws ssm get-command-invocation --command-id "$command_id" \
+              --instance-id "$INSTANCE_ID" --output json 2> "$RUNNER_TEMP/ssm-error"); then
+              case $(jq -r .Status <<< "$result") in
+                Pending|InProgress|Delayed|Cancelling) continue ;;
+              esac
+              jq -r '.StandardOutputContent, .StandardErrorContent' <<< "$result"
+              test "$(jq -r .Status <<< "$result")" = Success
+              exit $?
+            elif ! grep -q InvocationDoesNotExist "$RUNNER_TEMP/ssm-error"; then
+              cat "$RUNNER_TEMP/ssm-error" >&2
+              exit 1
+            fi
+          done
+          echo "Timed out; check SSM command $command_id before retrying" >&2
+          exit 1
