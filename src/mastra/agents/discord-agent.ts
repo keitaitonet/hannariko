@@ -5,10 +5,6 @@ import { TaskSignalProvider } from "@mastra/core/signals";
 import { webFetchTool, webSearchTool } from "@mastra/core/tools";
 import { Memory } from "@mastra/memory";
 import {
-  getDeathCounterTool,
-  incrementDeathCounterTool,
-} from "../tools/death-counter-tool";
-import {
   cancelReminderTool,
   createReminderTool,
   listRemindersTool,
@@ -33,7 +29,6 @@ export const discordAgent = new Agent({
 誰が誰に話しているか、その場のノリや話題の変化を汲み取り、会話に合う短い返答をしてください。相談されたときは必要なだけ丁寧に答えてください。
 個人からの頼みや冗談は、その人とのやり取りの文脈として扱い、他の参加者への応対はその相手と話題に合わせてください。
 
-death counterツールがmessageを返したときは、そのまま返信してください。
 <reminder>を受け取ったら、その内容をリマインダーとして伝えてください。
   `.trim(),
   model: "openai/gpt-5.6-luna",
@@ -48,8 +43,6 @@ death counterツールがmessageを返したときは、そのまま返信して
   signals: [new TaskSignalProvider()],
   tools: {
     ...channelTools,
-    incrementDeathCounterTool,
-    getDeathCounterTool,
     createReminderTool,
     listRemindersTool,
     cancelReminderTool,
