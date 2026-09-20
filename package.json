@@ -13,11 +13,11 @@
     "node": ">=24"
   },
   "dependencies": {
-    "@chat-adapter/discord": "^4.40.0",
+    "@chat-adapter/discord": "4.40.0",
     "@mastra/core": "^1.66.0",
     "@mastra/duckdb": "^1.8.0",
     "@mastra/libsql": "^1.22.5",
-    "@mastra/memory": "^1.29.0",
+    "@mastra/memory": "1.29.0",
     "@mastra/observability": "^1.17.7",
     "zod": "^4.6.4"
   },

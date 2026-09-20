@@ -171,7 +171,7 @@ importers:
   .:
     dependencies:
       '@chat-adapter/discord':
-        specifier: ^4.40.0
+        specifier: 4.40.0
         version: 4.40.0(patch_hash=8fab21f64868628f3ba9780d7e71865ff6699c325e979004a32226b9f8e6fb22)(zod@4.6.4)
       '@mastra/core':
         specifier: ^1.66.0
@@ -183,7 +183,7 @@ importers:
         specifier: ^1.22.5
         version: 1.22.5(@mastra/core@1.66.0(zod@4.6.4))
       '@mastra/memory':
-        specifier: ^1.29.0
+        specifier: 1.29.0
         version: 1.29.0(patch_hash=0f979bf350a5c947cda550e6efa694de7cc834ff63f311096661b7af35f0fd02)(@mastra/core@1.66.0(zod@4.6.4))
       '@mastra/observability':
         specifier: ^1.17.7
