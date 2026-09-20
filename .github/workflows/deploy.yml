@@ -57,6 +57,7 @@ jobs:
             }
             process.exit(1);
           '
+          docker exec -i hannariko-ci node --input-type=module < tests/observer.test.mjs
       - name: Export tested image
         if: github.ref == 'refs/heads/main'
         run: docker save hannariko:ci -o "$RUNNER_TEMP/image.tar"
