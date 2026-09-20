@@ -24,3 +24,6 @@ DB は volume `hannariko_data` に保存。`down -v` で削除される。
 
 AWS 構成は [infrastructure/README.md](infrastructure/README.md) を参照。
 利用状況の分析は [docs/analysis.md](docs/analysis.md) を参照。
+
+Discord で「この挙動を記録して」「こういう機能がほしいので残して」などと伝えると、bot が tool で会話と自身の状態を保存できる。
+使い方と調査時の取得手順は [docs/context-records.md](docs/context-records.md) を参照。

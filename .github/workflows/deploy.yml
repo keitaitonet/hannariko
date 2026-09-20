@@ -44,12 +44,14 @@ jobs:
             -e OPENAI_API_KEY=offline-test -e DISCORD_BOT_TOKEN=offline-test \
             -e DISCORD_APPLICATION_ID=123456789012345678 \
             -e DISCORD_PUBLIC_KEY=0000000000000000000000000000000000000000000000000000000000000000 \
-            -e DATABASE_URL=file:/data/mastra.db -e DUCKDB_PATH=/data/mastra.duckdb hannariko:ci
+            -e DATABASE_URL=file:/data/mastra.db -e DUCKDB_PATH=/data/mastra.duckdb \
+            hannariko:ci
           docker exec hannariko-ci node --input-type=module -e '
             import assert from "node:assert/strict";
             import { readFileSync } from "node:fs";
             const adapter = readFileSync(new URL(import.meta.resolve("@chat-adapter/discord")), "utf8");
             assert(adapter.includes("message.guildId !== null || isUserMentioned"));
+            assert(adapter.includes("message_reference: message.reference"));
             for (let attempt = 0; attempt < 60; attempt++) {
               const response = await fetch("http://127.0.0.1:4111/health", { signal: AbortSignal.timeout(1000) }).catch(() => null);
               if (response?.ok) process.exit(0);
@@ -58,6 +60,7 @@ jobs:
             process.exit(1);
           '
           docker exec -i hannariko-ci node --input-type=module < tests/observer.test.mjs
+          docker exec -i hannariko-ci node --input-type=module < tests/records-runtime.mjs
       - name: Export tested image
         if: github.ref == 'refs/heads/main'
         run: docker save hannariko:ci -o "$RUNNER_TEMP/image.tar"

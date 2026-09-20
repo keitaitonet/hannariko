@@ -1,21 +1,31 @@
-import { createDiscordAdapter } from "@chat-adapter/discord";
 import { Agent, type ToolsInput } from "@mastra/core/agent";
 import { AgentChannels } from "@mastra/core/channels";
 import { TaskSignalProvider } from "@mastra/core/signals";
 import { webFetchTool, webSearchTool } from "@mastra/core/tools";
 import { Memory } from "@mastra/memory";
+import { ContextDiscordAdapter, createDiscordHandler } from "../discord/context";
+import { contextRecords } from "../records";
+import { createContextRecordTool } from "../records/tool";
 import {
   cancelReminderTool,
   createReminderTool,
   listRemindersTool,
 } from "../tools/reminder-tools";
 
+const discordAdapter = new ContextDiscordAdapter({ userName: "はんなり子" });
+const discordHandler = createDiscordHandler(discordAdapter);
+const saveContextRecord = createContextRecordTool(discordAdapter, contextRecords);
 const channels = new AgentChannels({
   adapters: {
     discord: {
-      adapter: createDiscordAdapter(),
+      adapter: discordAdapter,
       toolDisplay: "hidden",
     },
+  },
+  handlers: {
+    onMention: discordHandler,
+    onSubscribedMessage: discordHandler,
+    onDirectMessage: discordHandler,
   },
 });
 const channelTools = channels.getTools() as ToolsInput;
@@ -43,6 +53,7 @@ export const discordAgent = new Agent({
   signals: [new TaskSignalProvider()],
   tools: {
     ...channelTools,
+    saveContextRecord,
     createReminderTool,
     listRemindersTool,
     cancelReminderTool,

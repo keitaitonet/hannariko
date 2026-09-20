@@ -1,3 +1,4 @@
+import { databaseUrl } from "./database.ts";
 import { Mastra } from "@mastra/core";
 import { MastraCompositeStore } from "@mastra/core/storage";
 import { DuckDBStore } from "@mastra/duckdb";
@@ -9,8 +10,11 @@ import {
 } from "@mastra/observability";
 import { discordAgent } from "./agents/discord-agent";
 import { reminderWorkflow } from "./workflows/reminder-workflow";
+import { contextRecords } from "./records";
+import { contextRecordRoutes } from "./records/routes";
 
 export const mastra = new Mastra({
+  server: { apiRoutes: contextRecordRoutes(contextRecords) },
   bundler: {
     externals: ["@duckdb/node-bindings"],
   },
@@ -20,7 +24,7 @@ export const mastra = new Mastra({
     id: "composite-storage",
     default: new LibSQLStore({
       id: "mastra-storage",
-      url: process.env.DATABASE_URL ?? "file:./mastra.db",
+      url: databaseUrl,
     }),
     domains: {
       observability: new DuckDBStore({

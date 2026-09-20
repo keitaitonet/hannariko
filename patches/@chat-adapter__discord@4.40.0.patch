@@ -1,5 +1,5 @@
 diff --git a/dist/index.js b/dist/index.js
-index 2b07a8b6569234dac42026e560aef701e7e9fbbb..793690126e249acf11b5cc8568c0e385dfd3f264 100644
+index 2b07a8b6569234dac42026e560aef701e7e9fbbb..039a1f2ce43b94f6932b92dcb9e9b26c0adcd8a8 100644
 --- a/dist/index.js
 +++ b/dist/index.js
 @@ -2544,7 +2544,7 @@ var DiscordAdapter = class _DiscordAdapter {
@@ -34,3 +34,21 @@ index 2b07a8b6569234dac42026e560aef701e7e9fbbb..793690126e249acf11b5cc8568c0e385
      const threadId = this.encodeThreadId({
        guildId,
        channelId: parentChannelId,
+@@ -2747,7 +2731,16 @@ var DiscordAdapter = class _DiscordAdapter {
+           id: message.author.id,
+           username: message.author.username
+         },
+-        timestamp: message.createdAt.toISOString()
++        timestamp: message.createdAt.toISOString(),
++        message_reference: message.reference ? {
++          message_id: message.reference.messageId,
++          channel_id: message.reference.channelId,
++          guild_id: message.reference.guildId,
++          type: message.reference.type
++        } : undefined,
++        mentions: message.mentions.users.map((user) => ({ id: user.id })),
++        mention_roles: [...message.mentions.roles.keys()],
++        mention_everyone: message.mentions.everyone
+       },
+       // Add isMention flag for the chat handlers
+       isMention: isMentioned
