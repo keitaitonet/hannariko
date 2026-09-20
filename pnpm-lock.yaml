@@ -163,7 +163,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@chat-adapter/discord@4.40.0': 8fab21f64868628f3ba9780d7e71865ff6699c325e979004a32226b9f8e6fb22
+  '@chat-adapter/discord@4.40.0': fcecf2e1a26191e751dc1d0354167ab133fd97a130aae39b08f28a73297c739a
   '@mastra/memory@1.29.0': 0f979bf350a5c947cda550e6efa694de7cc834ff63f311096661b7af35f0fd02
 
 importers:
@@ -172,7 +172,7 @@ importers:
     dependencies:
       '@chat-adapter/discord':
         specifier: 4.40.0
-        version: 4.40.0(patch_hash=8fab21f64868628f3ba9780d7e71865ff6699c325e979004a32226b9f8e6fb22)(zod@4.6.4)
+        version: 4.40.0(patch_hash=fcecf2e1a26191e751dc1d0354167ab133fd97a130aae39b08f28a73297c739a)(zod@4.6.4)
       '@mastra/core':
         specifier: ^1.66.0
         version: 1.66.0(zod@4.6.4)
@@ -2609,7 +2609,7 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0
       '@babel/helper-validator-identifier': 8.0.4
 
-  '@chat-adapter/discord@4.40.0(patch_hash=8fab21f64868628f3ba9780d7e71865ff6699c325e979004a32226b9f8e6fb22)(zod@4.6.4)':
+  '@chat-adapter/discord@4.40.0(patch_hash=fcecf2e1a26191e751dc1d0354167ab133fd97a130aae39b08f28a73297c739a)(zod@4.6.4)':
     dependencies:
       '@chat-adapter/shared': 4.40.0(zod@4.6.4)
       chat: 4.40.0(zod@4.6.4)
