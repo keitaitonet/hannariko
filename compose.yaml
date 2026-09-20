@@ -7,6 +7,7 @@ services:
     environment:
       DATABASE_URL: file:/data/mastra.db
       DUCKDB_PATH: /data/mastra.duckdb
+      BOT_IMAGE: ${BOT_IMAGE}
     volumes:
       - data:/data
     restart: unless-stopped

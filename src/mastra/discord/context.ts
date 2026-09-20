@@ -66,6 +66,15 @@ export class ContextDiscordAdapter extends DiscordAdapter {
     ));
   }
 
+  async readIncomingMessage(threadId: string, messageId: string): Promise<IncomingMessage> {
+    const coordinates = this.decodeThreadId(threadId);
+    const channelId = coordinates.threadId ?? coordinates.channelId;
+    const raw = await this.read(`/channels/${snowflake.parse(channelId)}/messages/${snowflake.parse(messageId)}`);
+    const validated = discordMessageSchema.parse(raw);
+    if (validated.id !== messageId || validated.channel_id !== channelId) throw new Error("Discord message scope mismatch");
+    return this.parseDiscordMessage(raw as Parameters<typeof this.parseDiscordMessage>[0], threadId);
+  }
+
   async readMessages(channelId: string, before: string, limit = 50) {
     return z.array(discordMessageSchema).parse(await this.read(
       `/channels/${snowflake.parse(channelId)}/messages?before=${snowflake.parse(before)}&limit=${limit}`,

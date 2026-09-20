@@ -173,6 +173,9 @@ importers:
       '@chat-adapter/discord':
         specifier: 4.40.0
         version: 4.40.0(patch_hash=fcecf2e1a26191e751dc1d0354167ab133fd97a130aae39b08f28a73297c739a)(zod@4.6.4)
+      '@libsql/client':
+        specifier: 0.18.0
+        version: 0.18.0
       '@mastra/core':
         specifier: ^1.66.0
         version: 1.66.0(zod@4.6.4)

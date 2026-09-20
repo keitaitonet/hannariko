@@ -11,6 +11,21 @@ const incoming = (overrides = {}) => ({
   ...overrides,
 });
 
+test("record source is fetched from the bound thread and retains raw reply/content", async t => {
+  const a = adapter();
+  let path;
+  t.mock.method(globalThis, "fetch", async url => {
+    path = new URL(url).pathname;
+    return Response.json({ ...incoming().raw, type: 0, attachments: [], edited_timestamp: null });
+  });
+  const message = await a.readIncomingMessage("discord:100:200:201", "300");
+  assert.equal(path, "/api/v10/channels/201/messages/300");
+  assert.equal(message.threadId, "discord:100:200:201");
+  assert.equal(message.raw.content, "どこ？");
+  assert.equal(message.raw.message_reference.message_id, "299");
+  await assert.rejects(a.readIncomingMessage("discord:100:999", "300"), /scope mismatch/);
+});
+
 test("Gateway normalization retains reply and real mentions, independent of routing isMention", async () => {
   const a = adapter(); let received;
   a.chat = { handleIncomingMessage: async (_a, _t, m) => { received = m; } };
