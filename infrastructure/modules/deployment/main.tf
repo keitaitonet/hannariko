@@ -35,6 +35,7 @@ resource "aws_iam_role_policy" "deploy" {
       {
         Effect = "Allow"
         Action = [
+          "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability", "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart", "ecr:CompleteLayerUpload", "ecr:PutImage",
         ]
