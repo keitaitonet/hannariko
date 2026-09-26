@@ -3,7 +3,7 @@ set -euo pipefail
 
 dnf install -y docker
 
-# Compose is not in the Amazon Linux repository; use the official release.
+# ComposeはAmazon Linuxのリポジトリにないため、公式バイナリを使用する。
 compose_binary=$(mktemp)
 trap 'rm -f "$compose_binary"' EXIT
 curl -fsSL --retry 3 \

@@ -1,11 +1,11 @@
 resource "aws_vpc" "bot" {
-  cidr_block = "10.73.0.0/24"
+  cidr_block = var.cidr_block
 }
 
 resource "aws_subnet" "bot" {
   vpc_id                  = aws_vpc.bot.id
-  cidr_block              = "10.73.0.0/24"
-  availability_zone       = "ap-northeast-1a"
+  cidr_block              = var.cidr_block
+  availability_zone       = var.availability_zone
   map_public_ip_on_launch = true
 }
 
