@@ -1,25 +1,16 @@
 # syntax=docker/dockerfile:1
-FROM node:24-bookworm-slim AS build
+FROM node:24.21.0-bookworm-slim AS dependencies
 WORKDIR /app
 RUN npm install --global pnpm@12.4.1
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY patches ./patches
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
-COPY tsconfig.json ./
-COPY src ./src
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm build
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
 
-# Mastra generates a standalone package, but does not copy pnpm patch settings.
-RUN cp pnpm-workspace.yaml .mastra/output/ && cp -r patches .mastra/output/
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm --dir .mastra/output install --prod --no-frozen-lockfile
-
-FROM node:24-bookworm-slim
+FROM node:24.21.0-bookworm-slim
+LABEL org.opencontainers.image.source="https://github.com/keitaitonet/hannariko"
 ENV NODE_ENV=production
 WORKDIR /app
-COPY --from=build /app/.mastra/output ./
-RUN mkdir /data && chown node:node /data
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY package.json ./
+COPY src ./src
 USER node
-CMD ["node", "index.mjs"]
+CMD ["node", "src/main.ts"]

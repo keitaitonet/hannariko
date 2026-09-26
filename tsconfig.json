@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2024",
     "module": "ES2022",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -12,5 +12,5 @@
     "noEmit": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*.ts"]
 }

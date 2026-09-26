@@ -3,28 +3,25 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "mastra dev",
-    "build": "mastra build",
+    "start": "node --env-file-if-exists=.env src/main.ts",
     "check": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1140.0",
+    "@aws-sdk/lib-dynamodb": "^3.1140.0",
+    "@valibot/to-json-schema": "^1.8.0",
+    "discord.js": "^14.27.0",
+    "openai": "^7.23.0",
+    "valibot": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
   },
   "packageManager": "pnpm@12.4.1",
   "engines": {
     "node": ">=24"
-  },
-  "dependencies": {
-    "@chat-adapter/discord": "4.40.0",
-    "@libsql/client": "0.18.0",
-    "@mastra/core": "^1.66.0",
-    "@mastra/duckdb": "^1.8.0",
-    "@mastra/libsql": "^1.22.5",
-    "@mastra/memory": "1.29.0",
-    "@mastra/observability": "^1.17.7",
-    "zod": "^4.6.4"
-  },
-  "devDependencies": {
-    "@types/node": "^24.13.4",
-    "mastra": "^1.29.0",
-    "typescript": "^7.0.2"
   }
 }

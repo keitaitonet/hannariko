@@ -2,24 +2,16 @@ name: hannariko
 
 services:
   bot:
-    image: ${BOT_IMAGE:?Set BOT_IMAGE to the image to deploy}
-    env_file: .env
+    image: ${BOT_IMAGE:?Set BOT_IMAGE to the image digest to deploy}
+    env_file:
+      - path: .env
+        format: raw
     environment:
-      DATABASE_URL: file:/data/mastra.db
-      DUCKDB_PATH: /data/mastra.duckdb
-      BOT_IMAGE: ${BOT_IMAGE}
-    volumes:
-      - data:/data
-    restart: unless-stopped
+      DISCORD_GUILD_ID: "1312051401622294528"
+      OPENAI_MODEL: gpt-6-luna
+      AWS_REGION: ap-northeast-1
+      DYNAMODB_TABLE_NAME: hannariko-memory
     init: true
-    stop_grace_period: 60s
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4111/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
-      start_period: 60s
-      interval: 30s
-      timeout: 5s
+    restart: unless-stopped
     logging:
       driver: local
-
-volumes:
-  data:

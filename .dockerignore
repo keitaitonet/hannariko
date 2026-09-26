@@ -1,14 +1,6 @@
-*
+**
 !package.json
 !pnpm-lock.yaml
-!pnpm-workspace.yaml
-!tsconfig.json
-!patches/
-!patches/**
 !src/
 !src/**
-**/*.db
-**/*.db-*
-**/*.sqlite*
-**/*.duckdb*
-**/.env*
+src/**/*.test.ts
